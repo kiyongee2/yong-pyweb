@@ -14,16 +14,13 @@ def ocr_upload(request):
         uploadfile = request.FILES.get('uploadfile')
 
         if uploadfile != '':
-            name_old = uploadfile.name
-            name_ext = os.path.splitext(name_old)[1]
+            name_origin = uploadfile.name  # 원본 파일
+            fs = FileSystemStorage(location='static/source')  #서버에 저장된 파일
+            imgname = fs.save(f'src-{name_origin}', uploadfile)
 
-            fs = FileSystemStorage(location='static/source')
-            imgname = fs.save(f'src-{name_old}', uploadfile)
-
-            imgfile = Image.open(f'static/source/{imgname}')
-            result_text = pytesseract.image_to_string(imgfile, lang='kor+eng')
+            imgfile = Image.open(f'static/source/{imgname}') #파일 열기
+            result_text = pytesseract.image_to_string(imgfile, lang='kor+eng') #문자로 변환
             result_text = result_text.replace(" ", "")
-
     context = {
         'imgname': imgname,
         'result_text': result_text
