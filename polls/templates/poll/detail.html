@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>상세 페이지</title>
+    <link rel="stylesheet" href="{% static '/poll/css/style.css' %}">
+</head>
+<body>
+    <div id="container">
+        <section id="detail">
+            <h1>투표 하기</h1>
+            <form action="{% url 'poll:vote' question.id %}" method="post">
+               {% csrf_token %}
+               <fieldset>
+                   <legend>{{ question.question_text }}</legend>
+                    {% if error %}
+                        <span class="error">{{ error }}</span>
+                    {% endif %}
+                    {% for choice in question.choice_set.all %}
+                        <p>
+                            <input type="radio" name="choice" value="{{ choice.id }}">
+                            <label>{{ choice.choice_text }}</label>
+                        </p>
+                    {% endfor %}
+               </fieldset>
+                <p><button type="submit">투표</button></p>
+            </form>
+        </section>
+    </div>
+  <!-- <h2>{{ question.question_text }}</h2>
+       <ul>
+      {% for choice in question.choice_set.all %}
+        <li>{{ choice.choice_text }}</li>
+      {% endfor %}
+  </ul>-->
+</body>
+</html>

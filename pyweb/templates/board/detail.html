@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+  <section id="detail">
+      <h3 class="border-bottom py-2">{{ question.subject }}</h3>
+      <div class="card my-3">
+          <div class="card-body">
+              <div class="card-text">
+                  {{ question.content }}
+              </div>
+              <div class="d-flex justify-content-end">
+                  <div class="badge bg-light text-dark p-2">
+                      <div class="mb-2 text-left">{{ question.author }}</div>
+                      <div>{{ question.create_date }}</div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <h5 class="border-bottom my-3 py-2">{{ question.answer_set.count }}개의 답변이 있습니다.</h5>
+      {% for answer in question.answer_set.all %}
+      <div class="card my-3">
+          <div class="card-body py-0">
+              <div class="card-text" style="white-space: pre-line; line-height: 2">
+              {{ answer.content }}
+              </div>
+              <div class="d-flex justify-content-end my-2">
+                  <div class="badge bg-light text-dark p-2">
+                      <div class="mb-2">{{ answer.author }}</div>
+                      {{ question.create_date }}
+                  </div>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+      <form action="{% url 'board:answer_create' question.id %}"
+            method="post" class="my-3">
+          {% csrf_token %}
+          <!-- 오류 메시지 start -->
+          {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field in form %}
+                    {% if field.errors %}
+                    <strong>{{ field.label }}</strong>
+                      {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+          {% endif %}
+          <!-- 오류 메시지 end -->
+          <div class="form-group">
+            <textarea id="content" name="content" rows="10" class="form-control"
+                {% if not user.is_authenticated %} disabled {% endif %}></textarea>
+          </div>
+          <input type="submit" value="답변 등록" class="btn btn-primary my-3">
+      </form>
+  </section>
+</div>
+{% endblock %}
