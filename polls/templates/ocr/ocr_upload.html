@@ -5,11 +5,6 @@
     <meta charset="UTF-8">
     <title>OCR - 문자 인식</title>
     <link rel="stylesheet" href="{% static '/poll/css/style.css' %}">
-    <script>
-        function uploadFile(){
-            document.getElementById('uploadForm').submit();
-        }
-    </script>
 </head>
 <body>
     <div id="container">
@@ -19,12 +14,10 @@
             <form action="{% url 'ocr:ocr_upload' %}" method="post"
                   enctype="multipart/form-data" id="uploadForm">
                 {% csrf_token %}
-                <input type="file" name="uploadfile" id="uploadfile">
+                <p><input type="file" name="uploadfile" id="uploadfile"></p>
+                <p><button type="submit">READ</button></p>
             </form>
-            <div>
-                <button onclick="uploadFile()">READ</button>
-            </div>
-
+            <!-- 이미지 및 인식 결과 출력 -->
             <table width="100%">
                 <tr>
                     <td width="50%">
