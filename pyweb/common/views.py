@@ -6,13 +6,12 @@ def signin(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-
         #로그인
         user = authenticate(username=username, password=password)
 
         if user is not None: # user가 있으면
             login(request, user)  #로그인
-            return redirect('board:index')
+            return redirect('/')
         else:
             error = "아이디와 비밀번호를 확인해 주세요"
             return render(request, 'common/signin.html', {'error': error})
@@ -20,8 +19,8 @@ def signin(request):
         return render(request, 'common/signin.html')
 
 def signout(request):
-    logout(request)
-    return redirect('board:index')
+    logout(request)   #로그 아웃
+    return redirect('/')
 
 def signup(request):
     if request.method == "POST":
@@ -33,7 +32,7 @@ def signup(request):
             password1 = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password1)
             login(request, user)
-            return redirect('board:index')
+            return redirect('/')
     else:
         form = UserForm()
     context = {'form': form}
