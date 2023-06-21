@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container my-3">
+  <section id="post_list">
+      <h1>블로그 홈</h1>
+      {% if post_list %}
+        {% for post in post_list %}
+            <hr>
+            <h5>
+                <a href="{% url 'blog:detail' post.id %}">{{ post.title }}</a>
+            </h5>
+            <p style="white-space: pre-line; line-height: 1.5em">
+                {{ post.content }}
+            </p>
+            {% if post.photo %}
+                <img src="{{ post.photo.url }}"
+            {% endif %}
+        {% endfor %}
+      {% else %}
+        <p>포스트가 없습니다.</p>
+      {% endif %}
+  </section>
+</div>
+{% endblock %}

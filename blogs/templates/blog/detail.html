@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container my-3">
+  <section id="post_list">
+     <h3>{{ post.title }}</h3>
+     <p style="white-space: pre-line; line-height: 1.5em">
+         {{ post.content }}
+     </p>
+     <p>(작성일: {{ post.pub_date }})</p>
+  </section>
+</div>
+{% endblock %}
