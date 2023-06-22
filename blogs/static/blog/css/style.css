@@ -1,3 +1,16 @@
 /* 공통 스타일 */
 a{text-decoration: none;}
 textarea{resize: none;}
+/*ul li{list-style: none}*/
+
+/* post_list 스타일 */
+#post_list{width: 700px; float: left;}
+
+/* detail 스타일 */
+#detail{width: 700px; float: left;}
+
+/* 카테고리 스타일 */
+aside{width: 200px; float: right; margin: 20px 100px 0 0;}
+aside ul{padding-left: 20px;}
+aside ul li{margin: 5px 0}
+
