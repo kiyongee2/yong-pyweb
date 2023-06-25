@@ -3,6 +3,9 @@
 {% block content %}
 <div class="container my-3">
   <section id="detail">
+      {% if post.category %}
+         <h6 class="text-end">[{{ post.category }}]</h6>
+     {% endif %}
      <h3>{{ post.title }}</h3>
       <p>작성자: {{ post.author }} (작성일: {{ post.pub_date }})</p>
      <p style="white-space: pre-line; line-height: 1.5em">
@@ -11,25 +14,41 @@
       {% if post.photo %}
         <img src="{{ post.photo.url }}">
       {% endif %}
-
+      <!-- 파일 업로드 및 다운로드 -->
       {% if post.file %}
         <p>
-            <a href="{{ post.file.url }}">
-                Download : <i class="far fa-file"></i>
+            <a href="{{ post.file.url }}" class="btn btn-outline-dark">
+                Download :
+                {% if post.get_file_ext == 'csv' %}
+                    <i class="fa-solid fa-file-csv"></i>
+                {% elif post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %}
+                    <i class="fa-solid fa-file-excel"></i>
+                {% else %}
+                    <i class="fa-solid fa-file"></i>
+                {% endif %}
+                {{ post.get_file_name }}
             </a>
         </p>
       {% endif %}
   </section>
-    <aside>
-    <h3>분류</h3>
+  <aside>
+    <h4>분류(Categories)</h4>
     <div>
         <ul>
             {% for category in categories %}
-                <li>
+                {% if current_category.slug == category.slug %}
+                <li style="background: #eee">
                     <a href="{{ category.get_absolute_url }}">
-                        {{ category }}({{ category.post_set.count }})
+                        {{ category.name }}({{ category.post_set.count }})
                     </a>
                 </li>
+                {% else %}
+                <li>
+                    <a href="{{ category.get_absolute_url }}">
+                        {{ category.name }}({{ category.post_set.count }})
+                    </a>
+                </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

@@ -1,7 +1,7 @@
 /* 공통 스타일 */
 a{text-decoration: none;}
 textarea{resize: none;}
-/*ul li{list-style: none}*/
+ul li{list-style: none}
 
 /* post_list 스타일 */
 #post_list{width: 700px; float: left;}
@@ -13,4 +13,12 @@ textarea{resize: none;}
 aside{width: 200px; float: right; margin: 20px 100px 0 0;}
 aside ul{padding-left: 20px;}
 aside ul li{margin: 5px 0}
+
+/* 페이지 영역 스타일 */
+#paging{width: 100%; clear: both;}
+#paging ul{text-align: center;}
+#paging ul li{display: inline-block; margin: 20px 5px;}
+#paging ul li a{font-size: 1.2rem;}
+#paging ul li a.active{font-weight: bold;}
+
 

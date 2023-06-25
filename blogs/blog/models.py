@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+import os
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)  #카테고리 이름
@@ -36,5 +37,11 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_file_name(self):
+        return os.path.basename(self.file.name)
+
+    def get_file_ext(self):
+        return self.get_file_name().split('.')[-1]
 
 

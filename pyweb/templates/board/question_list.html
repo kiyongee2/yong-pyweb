@@ -47,10 +47,12 @@
       <!-- 페이지 영역  시작-->
         <ul class="pagination justify-content-center">
             <!-- 이전 페이지 -->
-           {% if question_list.has_previous %}
+            {% if question_list.has_previous %}
             <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ question_list.previous_page_number }}">이전</a>
+                <!--<a class="page-link"
+                   href="?page={{ question_list.previous_page_number }}">이전</a>-->
+                <a class="page-link" href="#"
+                   data-page="{{ question_list.previous_page_number }}">이전</a>
             </li>
             {% else %}
             <li class="page-item disabled">
@@ -61,13 +63,15 @@
             {% for page_number in question_list.paginator.page_range %}
                 {% if page_number == question_list.number %}
                 <li class="page-item active">
-                    <a class="page-link" href="?page={{ page_number }}">
+                    <!--<a class="page-link" href="?page={{ page_number }}">-->
+                    <a class="page-link" href="#" data-page="{{ page_number }}">
                         {{ page_number }}
                     </a>
                 </li>
                 {% else %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_number }}">
+                    <!--<a class="page-link" href="?page={{ page_number }}">-->
+                    <a class="page-link" href="#" data-page="{{ page_number }}">
                         {{ page_number }}
                     </a>
                 </li>
@@ -76,7 +80,9 @@
             <!-- 다음 페이지 -->
         {% if question_list.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>
+            <!--<a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>-->
+            <a class="page-link" href="#"
+               data-page="{{ question_list.next_page_number }}">다음</a>
         </li>
         {% else %}
         <li class="page-item disabled">
@@ -86,6 +92,7 @@
         </ul>
       <!-- 페이지 영역 끝 -->
       <a href="{% url 'board:question_create' %}" class="btn btn-primary">질문 등록</a>
+
       <!-- 검색 폼 만들기 -->
       <form action="" method="get" id="searchForm">
           <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
@@ -93,6 +100,24 @@
       </form>
   </section>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(function(){
+        //페이지 처리
+        $('.page-link').click(function(){         //페이지 번호를 클릭하면
+            $('#page').val($(this).data('page')); //페이지 번호값을 할당한후 hidden 타입으로
+            $('#searchForm').submit();            //폼을 전송함
+        });
+
+        //검색 처리
+        $('#btn_search').click(function(){ //"찾기" 버튼을 클릭하면
+            $('#kw').val($('.kw').val())   //입력된 키워드를 hidden 타입으로
+            $('#page').val(1)              //1페이지 부터 검색함
+            $('#searchForm').submit()      //폼을 전송함
+        })
+    });
+</script>
 {% endblock %}
 <!--<p class="text-center">1 2 3</p>-->
 <!--<ul class="text-center">

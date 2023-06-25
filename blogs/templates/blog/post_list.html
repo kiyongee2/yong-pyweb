@@ -13,10 +13,16 @@
             <h5>
                 <a href="{% url 'blog:detail' post.id %}">{{ post.title }}</a>
             </h5>
-            <p>작성자: {{ post.author }} (작성일: {{ post.pub_date }})</p>
-            <p style="white-space: pre-line; line-height: 1.5em">
-                {{ post.content }}
+            <p>
+                작성자: {{ post.author }} (작성일: {{ post.pub_date }}) |
+                {% if post.author == request.user  %}
+                <a href="#" class="delete"
+                   data-uri="{% url 'blog:post_delete' post.id %}">삭제</a>
+                {% endif %}
             </p>
+            <!-- <p style="white-space: pre-line; line-height: 1.5em">-->
+                <p> {{ post.content | linebreaks }}
+            <!-- </p>-->
             {% if post.photo %}
                 <img src="{{ post.photo.url }}">
             {% endif %}
@@ -47,5 +53,45 @@
         </ul>
     </div>
   </aside>
+  <section id="paging">
+      <ul>
+      <!-- 이전 페이지-->
+      {% if post_list.has_previous %}
+          <li><a href="?page={{ post_list.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+          <li>&laquo;</li>
+      {% endif %}
+      <!-- 페이지 리스트 -->
+      {% for page_number in post_list.paginator.page_range %}
+          {% if page_number == post_list.number %}
+            <li>
+                <a href="?page={{ page_number }}" class="active">{{ page_number }}</a>
+            </li>
+          {% else %}
+            <li>
+                <a href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+          {% endif %}
+      {% endfor %}
+      <!-- 다음 페이지-->
+      {% if post_list.has_next %}
+          <li><a href="?page={{ post_list.next_page_number }}">&raquo;</a></li>
+      {% else %}
+          <li>&raquo;</li>
+      {% endif %}
+      </ul>
+  </section>
 </div>
 {% endblock %}
+{% block script  %}
+<script>
+    $(function(){
+        $('.delete').click(function(){
+            if(confirm('포스트를 정말로 삭제하시겠습니까?')){
+                location.href=$(this).data('uri');
+            }
+        });
+    });
+</script>
+{% endblock %}
+
