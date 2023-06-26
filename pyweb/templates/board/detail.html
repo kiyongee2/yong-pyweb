@@ -3,33 +3,47 @@
 <div class="container my-3">
   <section id="detail">
       <h3 class="border-bottom py-2">{{ question.subject }}</h3>
-      <div class="card my-3">
-          <div class="card-body">
-              <div class="card-text" style="white-space: pre-line; line-height: 2">
-                  {{ question.content }}
+      <!-- 추천 영역과 질문 영역으로 구분 -->
+      <div class="row">
+          <!-- 추천 영역 -->
+          <div class="col-1">
+              <div class="bg-light text-center p-3 border font-weight-bolder">
+                  {{ question.voter.count }}
               </div>
-              <div class="d-flex justify-content-end">
-                  {% if question.modify_date %} <!-- 질문 수정일이 있으면 -->
-                  <div class="badge bg-light text-dark p-2 mx-2">
-                      <div class="mb-2 text-start">modified at</div>
-                      <div>{{ question.modify_date }}</div>
-                  </div>
-                  {% endif %}
-                  <div class="badge bg-light text-dark p-2">
-                      <div class="mb-2 text-start">{{ question.author }}</div>
-                      <div>{{ question.create_date }}</div>
-                  </div>
-              </div>
-              {% if question.author == request.user %}
-              <div>
-                  <a href="{% url 'board:question_modify' question.id %}"
-                     class="btn btn-sm btn-outline-secondary">수정</a>
-                  <a href="#" data-uri="{% url 'board:question_delete' question.id %}"
-                     class="delete btn btn-sm btn-outline-secondary">삭제</a>
-              </div>
-              {% endif %}
+              <a href="#" data-uri="{% url 'board:vote_question' question.id %}"
+                 class="recommend btn btn-secondary btn-block px-3 m-1">추천</a>
           </div>
-      </div>
+          <!-- 질문 영역 -->
+          <div class="col-11">
+              <div class="card my-3">
+                  <div class="card-body">
+                      <div class="card-text" style="white-space: pre-line; line-height: 2">
+                          {{ question.content }}
+                      </div>
+                      <div class="d-flex justify-content-end">
+                          {% if question.modify_date %} <!-- 질문 수정일이 있으면 -->
+                          <div class="badge bg-light text-dark p-2 mx-2">
+                              <div class="mb-2 text-start">modified at</div>
+                              <div>{{ question.modify_date }}</div>
+                          </div>
+                          {% endif %}
+                          <div class="badge bg-light text-dark p-2">
+                              <div class="mb-2 text-start">{{ question.author }}</div>
+                              <div>{{ question.create_date }}</div>
+                          </div>
+                      </div>
+                      {% if question.author == request.user %}
+                      <div>
+                          <a href="{% url 'board:question_modify' question.id %}"
+                             class="btn btn-sm btn-outline-secondary">수정</a>
+                          <a href="#" data-uri="{% url 'board:question_delete' question.id %}"
+                             class="delete btn btn-sm btn-outline-secondary">삭제</a>
+                      </div>
+                      {% endif %}
+                  </div>
+              </div>
+          </div> <!-- col-11 끝 -->
+      </div><!--row 끝-->
       <h5 class="border-bottom my-3 py-2">{{ question.answer_set.count }}개의 답변이 있습니다.</h5>
       {% for answer in question.answer_set.all %}
       <div class="card my-3">
@@ -93,10 +107,20 @@
 <!-- 삭제 알림창 -->
 {% block script %}
 <script>
+    //삭제 처리
     $(document).ready(function(){
         $('.delete').click(function(){
             if(confirm('정말로 삭제하시겠습니까?')){
                 location.href=$(this).data('uri');
+            }
+        });
+    });
+
+    //추천 처리
+    $(function(){
+        $('.recommend').click(function(){
+            if(confirm('정말로 추천하시겠습니까?')){
+                location.href = $(this).data('uri');
             }
         });
     });

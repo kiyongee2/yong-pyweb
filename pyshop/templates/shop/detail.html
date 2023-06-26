@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
-
 {% block title %}Product Detail
 {% endblock %}
-
 {% block content %}
 <div class="row my-3">
     <div class="col-4">
@@ -17,7 +15,8 @@
             <input type="submit" class="btn btn-primary btn-sm"
                    value="Add to Cart">
         </form>
-        <h5><span class="badge badge-secondary">Description</span>{{ product.description|linebreaks }}</h5>
+        <h5><span class="badge badge-secondary">Description</span>
+            {{ product.description|linebreaks }}</h5>
     </div>
 </div>
 {% endblock %}

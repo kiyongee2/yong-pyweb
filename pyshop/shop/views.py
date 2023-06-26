@@ -17,13 +17,19 @@ def product_in_category(request, category_slug=None):
         current_category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=current_category)
 
-    return render(request, 'shop/list.html', {'current_category': current_category,
-                                              'categories': categories,
-                                              'products': products,
-                                              })
+    context = {
+        'current_category': current_category,
+        'categories': categories,
+        'products': products,
+    }
+    return render(request, 'shop/list.html', context)
 
 
 def product_detail(request, id, product_slug=None):
     product = get_object_or_404(Product, id=id, slug=product_slug)
     add_to_cart = AddProductForm(initial={'quantity': 1})
-    return render(request, 'shop/detail.html', {'product': product, 'add_to_cart': add_to_cart})
+    context = {
+        'product': product,
+        'add_to_cart': add_to_cart
+    }
+    return render(request, 'shop/detail.html', context)

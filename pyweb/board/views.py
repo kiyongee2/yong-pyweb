@@ -8,6 +8,7 @@ from board.forms import QuestionForm, AnswerForm
 from board.models import Question, Answer
 
 from django.utils import timezone
+from django.contrib import messages
 
 def index(request):
     return render(request, 'board/index.html')
@@ -121,3 +122,13 @@ def answer_delete(request, answer_id):
     answer = get_object_or_404(Answer, pk=answer_id)
     answer.delete()
     return redirect('board:detail', question_id=answer.question.id)
+
+# 질문 추천
+@login_required(login_url='common:signin')
+def vote_question(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    if request.user == question.author:
+        messages.error(request, "본인이 작성한 글은 추천할 수 없습니다.")
+    else:
+        question.voter.add(request.user)
+    return redirect('board:detail', question_id=question_id)

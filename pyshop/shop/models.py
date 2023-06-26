@@ -15,11 +15,12 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):  # 상세 페이지 경로
+    def get_absolute_url(self):  # product 페이지 경로
         return reverse('shop:product_in_category', args=[self.slug])
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL,
+                    null=True, related_name='products')
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, db_index=True, unique=True, allow_unicode=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
@@ -40,5 +41,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self): #제품 상세페이지 경로
         return reverse('shop:product_detail', args=[self.id, self.slug])
+

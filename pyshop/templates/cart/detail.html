@@ -3,12 +3,12 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Product</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Remove</th>
-            <th scope="col">Unit price</th>
-            <th scope="col">Price</th>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Remove</th>
+            <th>Unit price</th>
+            <th>Price</th>
         </tr>
     </thead>
     <tbody>
@@ -44,6 +44,9 @@
 </table>
 
     <p class="text-end">
-        <a href="{% url 'shop:product_all' %}" class="btn btn-secondary">Continue shopping</a>
+        <a href="{% url 'shop:product_all' %}" class="btn btn-secondary">
+            Continue shopping
+        </a>
     </p>
 {% endblock %}
+
