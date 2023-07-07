@@ -3,26 +3,26 @@
 {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Welcome~</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hello~</title>
     <link rel="stylesheet" href="{% static 'shop/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
     <script src="{% static 'shop/js/bootstrap.js' %}"></script>
-    <!-- juery 라이브러리 -->
     <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/187dabceeb.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <!-- 본문 내용 start -->
-    {% include 'navbar.html' %}
-    <div class="container">
-    {% block content %}
-    {% endblock %}
-    </div>
-    <!--본문 내용 end -->
+{% include 'header.html' %}
+{% include 'navbar.html' %}
+<!-- 본문 내용 start-->
+<div class="container my-3">
+{% block content %}
 
-    <!--자바스크립트 start -->
-    {% block script %}
-    {% endblock %}
-    <!--자바스크립트 end -->
+{% endblock %}
+</div>
+<!-- 본문 내용 end-->
+
+<!-- 제이쿼리 영역-->
+{% block script %}
+{% endblock %}
 </body>
 </html>

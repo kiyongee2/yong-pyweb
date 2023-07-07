@@ -4,8 +4,12 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w305cz6m&qe(5@crz=1-4c1d3ny&r^l!!py0g#p9y!ef#^!=mv'
+SECRET_KEY = 'django-insecure-%q&b&1)a(*x8f)qn-(0v)39!tq3+ist_2j2j(txcgb56$w@+gr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -24,6 +28,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'shop',
     'cart',
+    'coupon',
+    'allauth',  #social login 명시, 미리 설치 -pip install django-allauth
+    'django.contrib.sites', #social login 명시
+    'allauth.account', #social login 명시
+    'allauth.socialaccount', #social login 명시
+    'allauth.socialaccount.providers.naver' #social login 명시, 네이버 api 이용
 ]
 
 MIDDLEWARE = [
@@ -106,6 +116,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = 'media/'
+# 프로젝트 폴더 아래 media 폴더 생성됨
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
@@ -113,7 +124,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CART_ID = 'cart_item'
+CART_ID = "cart_item"
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+)
+SITE_ID = 1
+
 
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'

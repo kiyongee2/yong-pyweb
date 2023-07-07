@@ -4,5 +4,5 @@ from . import views
 app_name = 'ocr'
 
 urlpatterns = [
-    path('', views.ocr_upload, name='ocr_upload'),
+    path('', views.ocr_read, name='ocr_read'),
 ]

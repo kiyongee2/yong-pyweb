@@ -1,47 +1,56 @@
+import os
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-import os
 
+
+# 카테고리 모델
 class Category(models.Model):
-    name = models.CharField(max_length=50, unique=True)  #카테고리 이름
-    # url 주소: allow_unicode - 한글 주소
-    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
+    # unique=True 중복 불허
+    name = models.CharField(max_length=50, unique=True)
+    # url주소 - 문자, allow_unicode - 한글허용
+    slug = models.SlugField(max_length=200, unique=True,
+                allow_unicode=True)
 
     def __str__(self):
         return self.name
 
+    # 카테고리 url 주소
     def get_absolute_url(self):
-        #return f'/blog/category/{self.slug}'
-        #reverse - 경로를 문자열로 반환(redirect와 유사)
+        # return f'/blog/category/{self.slug}'  #절대 경로
+        # reverse() - redirect 유사 : app-name으로 경로 이동
         return reverse('blog:category_page', args=[self.slug])
 
-    # 모델 이름이 admin에서 category -> categories로 변경됨
+    # 관리자 페이지에서 적용 - verbose_name_plural(복수형)
     class Meta:
-        ordering = ['name']
+        ordering = ['name']  # 이름순 정렬
         verbose_name = 'category'
         verbose_name_plural = 'categories'
 
+# 포스트 모델
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    pub_date = models.DateTimeField()
-    modify_date = models.DateTimeField(null=True, blank=True)
-    photo = models.ImageField(upload_to='blog/images/%Y/%m/%d',
+    title = models.CharField(max_length=100)  #제목
+    content = models.TextField()              #내용
+    pub_date = models.DateTimeField()         #발행일
+    modify_date = models.DateTimeField(null=True, blank=True) #입력 폼이 비어도 됨
+    photo = models.ImageField(upload_to='blog/images/%Y/%m/%d/',
+                    null=True, blank=True)  #null 허용, 파일을 첨부하지 않을수 있음
+    file = models.FileField(upload_to='blog/files/%Y/%m/%d/',
                     null=True, blank=True)
-    file = models.FileField(upload_to='blog/files/%Y/%m/%d',
-                    null=True, blank=True)
+    # models.SET_NULL: 카테고리가 삭제되어도 카테고리가 없는 포스트는 유지
     category = models.ForeignKey(Category, null=True, blank=True,
                     on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.title
 
+    # 파일의 이름 출력
     def get_file_name(self):
         return os.path.basename(self.file.name)
 
+    # 파일의 확장자 구분
     def get_file_ext(self):
+        # seoul.csv ->split() -> [seoul, csv]
         return self.get_file_name().split('.')[-1]
-
-

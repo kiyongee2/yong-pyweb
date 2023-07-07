@@ -1,48 +1,87 @@
-{%  extends 'base.html' %}
-
-{% block title %}Category Page
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="row my-3">
-    <div class="col-2">
-        <div class="list-group">
-            <a href="{% url 'shop:product_all' %}" class="list-group-item
-                       {% if not current_category %} active {% endif %}">All</a>
+<section id="list">
+    <div class="row">
+         <!--2: 10 - 분류: 상품-->
+        <div class="col-2">
+            <div class="list-group">
+                <a href="{% url 'shop:product_all' %}"
+                   class="list-group-item
+                   {% if not current_category %}active{% endif %}" >All</a>
+            </div>
             {% for category in categories %}
-                <a href="{{ category.get_absolute_url }}"
-                   class="list-group-item {% if current_category.slug == category.slug %}
-                          active{% endif %}">{{ category.name }}</a>
+            <a href="{{ category.get_absolute_url }}"
+               class="list-group-item
+                  {% if current_category.slug == category.slug %}active{% endif %}">
+                  {{ category.name }}
+            </a>
             {% endfor %}
         </div>
-    </div>
-    <div class="col-10">
-        <div class="alert alert-info">
-            {% if current_category %}
-                {{ current_category.name }}
-            {% else %}
-                All Products
-            {% endif %}
-        </div>
-        <div class="row">
-            {% for product in products %}
-            <div class="col-4">
-                <div class="card">
-                    <img class="card-img-top" src="{{ product.image.url }}" alt="Product Image">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">
-                            {{ product.description }}
-                            <span class="badge badge-secondary">
-                            {{ product.price }}</span>
-                        </p>
-                        <a href="{{ product.get_absolute_url }}" class="btn btn-primary">View Detail</a>
+
+        <!-- 제품 -->
+        <div class="col-10">
+            <div class="alert alert-info">
+                {% if current_category %}
+                    {{ current_category.name }}
+                {% else %}
+                    All Products
+                {% endif %}
+            </div>
+            <!--검색-->
+            <div class="row mb-2">
+                <div class="col"></div>
+                <div class="col-7 d-flex justify-content-end mb-3">
+                <form action="" method="get" id="searchForm">
+                    {% csrf_token %}
+                    제목으로 검색
+                    <input type="hidden" id="kw" name="kw" value="{{ kw }} ">
+                    <input type="text" class="kw" value="{{ kw|default_if_none:'' }}">
+                    <button type="button" id="btn_search">SEARCH</button>
+                </form>
+            </div>
+            <div class="row">
+                {% for product in products %}
+                <div class="col-4">
+                    <div class="card">
+                        <img class="card-img-top" src="{{ product.image.url }}"
+                            alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">
+                                {{ product.description }}
+                                <span class="badge bg-dark">
+                                    {{ product.price }}
+                                </span>
+                            </p>
+                            <a href="{{ product.get_absolute_url }}"
+                                    class="btn btn-success">View Detail</a>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
 
+{% block script %}
+<script>
+    $(function(){
+        //검색 처리 버튼을 클릭햇을때
+        $('#btn_search').click(function(){
+            $('#kw').val($('.kw').val());  //입력폼에서 입력된 키워드를 hidden 타입
+            $('#searchForm').submit();     //폼을 전송함 - view로
+        });
+        // 엔터로 검색했을 때도 조회되도록
+        $('.kw').keypress(function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                $('#searchForm').submit();
+            }
+        });
+
+    });
+</script>
+{% endblock %}

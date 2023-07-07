@@ -3,47 +3,70 @@
 {% block content %}
 <div class="container my-3">
   <section id="question_list">
-      <!-- 검색 입력상자 -->
-       <div class="row mb-2">
-          <div class="col-8"></div>
-          <div class="col-4 d-flex justify-content-end ">
-              <input type="text" class="kw form-control" value="{{ kw|default_if_none:'' }}">
-              <div class="col-2 input-group-append">
-                  <button type="button" id="btn_search"
-                          class="btn btn-outline-secondary">찾기</button>
+      <div class="row">
+          <div class="col-2 p-2">
+            <!-- Sidebar  -->
+            <!--<nav id="sidebar" class="border-top border-secondary">
+                <div class="list-group">
+                    {% for category in category_list %}
+                        {% if category == current_category %}
+                            <a class="rounded-0 list-group-item list-group-item-action list-group-item-light active"
+                               href="{{ category.get_absolute_url }}">{{ category.description }}</a>
+                        {% else %}
+                            <a class="rounded-0 list-group-item list-group-item-action list-group-item-light"
+                               href="{{ category.get_absolute_url }}">{{ category.description }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </nav>-->
+          </div>
+
+      <div class="col-10 p-2">
+          <!-- Content -->
+          <div id="content" class="border-top border-secondary">
+             <div class="content_block">
+             <!--<h5 class="border-bottom pl-2 pb-3 my-2">{{ current_category.description }}</h5>-->
+          <!-- 검색 입력상자 -->
+           <div class="row mb-2">
+              <div class="col-8"></div>
+              <div class="col-4 d-flex justify-content-end ">
+                  <input type="text" class="kw form-control" value="{{ kw|default_if_none:'' }}">
+                  <div class="col-2 input-group-append">
+                      <button type="button" id="btn_search"
+                              class="btn btn-outline-secondary">찾기</button>
+                  </div>
               </div>
           </div>
-      </div>
-      <!-- 게시판 목록 -->
-      <table class="table">
-          <thead>
-            <tr class="table-dark">
-                <th>번호</th><th>제목</th><th>작성일시</th><th>글쓴이</th>
-            </tr>
-          </thead>
-          <tbody>
-          {% if question_list %}
-            {% for question in question_list %}
-                <tr>
-                   <!-- <td>{{ forloop.counter|add:1 }}</td>-->
-                    <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
-                    <td>
-                        <a href="{% url 'board:detail' question.id %}">
-                            {{ question.subject }}
-                        </a>
-                        {% if question.answer_set.count > 0 %}
-                        <span class="text-danger">[{{ question.answer_set.count }}]</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ question.create_date }}</td>
-                    <td>{{ question.author }}</td>
+          <!-- 게시판 목록 -->
+          <table class="table">
+              <thead>
+                <tr class="table-dark">
+                    <th>번호</th><th>제목</th><th>작성일시</th><th>글쓴이</th>
                 </tr>
-            {% endfor %}
-          {% else %}
-            <p>질문이 없습니다.</p>
-          {% endif %}
-          </tbody>
-      </table>
+              </thead>
+              <tbody>
+              {% if question_list %}
+                {% for question in question_list %}
+                    <tr>
+                       <!-- <td>{{ forloop.counter|add:1 }}</td>-->
+                        <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
+                        <td>
+                            <a href="{% url 'board:detail' question.id %}">
+                                {{ question.subject }}
+                            </a>
+                            {% if question.answer_set.count > 0 %}
+                            <span class="text-danger">[{{ question.answer_set.count }}]</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ question.create_date }}</td>
+                        <td>{{ question.author }}</td>
+                    </tr>
+                {% endfor %}
+              {% else %}
+                <p>질문이 없습니다.</p>
+              {% endif %}
+              </tbody>
+          </table>
       <!-- 페이지 영역  시작-->
         <ul class="pagination justify-content-center">
             <!-- 이전 페이지 -->
@@ -98,6 +121,10 @@
           <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
           <input type="hidden" id="page" name="page" value="{{ page }}">
       </form>
+     </div>
+      </div>
+      </div>
+      </div>
   </section>
 </div>
 {% endblock %}

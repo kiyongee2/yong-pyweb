@@ -1,21 +1,11 @@
-from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-
-from common.forms import UserForm
-
+from .forms import UserForm
 
 def signup(request):
     if request.method == "POST":
-        form = UserForm(request.POST)
+        form = UserForm(request.POST) #폼에 입력된 데이터를 넘겨 받음
         if form.is_valid():
-            form.save() # 회원 가입 저장
-            #가입후 자동 로그인
-            '''
-            username = form.cleaned_data.get('username')
-            password1 = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password1)
-            login(request, user)
-            '''
+            form.save()  #db 저장
             return redirect('/')
     else:
         form = UserForm()

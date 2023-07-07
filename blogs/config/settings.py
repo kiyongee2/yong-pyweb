@@ -9,12 +9,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-av^=zrb1=iztzye8^qng@bu#obz5x_8o=p%(z9om=s#7=zgtnw'
+SECRET_KEY = 'django-insecure-q=w53h7k)+zhk$smk0rb133rvi^3p-a7y-3=%^aizx(vcim)u7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -28,6 +28,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'common',
+
+    # 소셜 로그인 설정
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google'
 ]
 
 MIDDLEWARE = [
@@ -110,13 +117,20 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = 'media/'
+# 프로젝트 폴더 아래 media 폴더 생성됨
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = '/'
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+)
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/blog/'    # 로그인 성공시 이동 페이지
 LOGOUT_REDIRECT_URL = '/'

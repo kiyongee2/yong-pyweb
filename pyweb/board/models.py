@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
+
 
 class Question(models.Model):
+    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subject = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()

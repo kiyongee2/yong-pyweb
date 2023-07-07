@@ -6,10 +6,12 @@ from blog import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index),
+    path('', views.index), #http://127.0.0.1:8000/
     path('blog/', include('blog.urls')),
-    path('common/', include('common.urls'))
+    path('common/', include('common.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,
-                document_root=settings.MEDIA_ROOT)
+        document_root=settings.MEDIA_ROOT)
+

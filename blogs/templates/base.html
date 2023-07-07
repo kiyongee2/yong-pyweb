@@ -1,27 +1,80 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome~</title>
+    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'blog/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
     <script src="{% static 'blog/js/bootstrap.js' %}"></script>
-    <!-- juery 라이브러리 -->
     <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/187dabceeb.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/187dabceeb.js"
+            crossorigin="anonymous"></script> <!-- fontawesome 키트-->
 </head>
 <body>
-  <!-- 본문 내용 start -->
-    {% include 'navbar.html' %}
-    {% block content %}
-    {% endblock %}
-    <!--본문 내용 end -->
+{% include 'navbar.html' %}
+<div class="container my-3">
+    <div class="row">
+        <div class="col-md-8 col-lg-9">
+            {% block content %}
+            {% endblock %}
+        </div>
+    <!-- 검색 및 분류 -->
+        <div class="col-md-4 col-lg-3">
+            <!-- Search Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Search</h5>
+                <div class="card-body">
+                    <div class="input-group">
+                       <input type="text" class="kw form-control" value="{{ kw }}">
+                        <div class="col-2 input-group-append mx-1">
+                            <button type="button" id="btn_search"
+                                class="btn btn-outline-secondary px-1">찾기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <!--자바스크립트 start -->
-    {% block script %}
-    {% endblock %}
-    <!--자바스크립트 end -->
+             <!-- Categories Widget -->
+            <div class="card my-4" id="categories-card">
+                <h5 class="card-header">Categories</h5>
+                <div class="card-body">
+                    <ul>
+                        <li>
+                            <a href="{% url 'blog:post_list' %}">
+                                {% if not current_category %}
+                                    <b>전체보기({{ total_post }})</b>
+                                {% else %}
+                                    전체보기({{ total_post }})
+                                {% endif %}
+                            </a>
+                        </li>
+                        {% for category in categories %}
+                            {% if current_category.slug == category.slug %}
+                           <!-- category.post_set.count : 포스트의 총 개수-->
+                            <li style="background: #eee">
+                                <a href="{{ category.get_absolute_url }}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <a href="{{ category.get_absolute_url }}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div> <!-- 카테고리 끝 -->
+        </div> <!-- 검색 및 분류 끝 -->
+
+    </div>
+</div>
+
+{% block script %}
+{% endblock %}
 </body>
 </html>

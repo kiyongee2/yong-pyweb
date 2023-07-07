@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
-from board.forms import QuestionForm, AnswerForm
+from board.forms import QuestionForm, AnswerForm, CommentForm
 from board.models import Question, Answer
 
 from django.utils import timezone
@@ -14,6 +14,9 @@ def index(request):
     return render(request, 'board/index.html')
 
 def question_list(request):
+    # categories = Category.objects.all()
+    # category = get_object_or_404(Category, name=category_name)
+    # question_list = Question.objects.filter(category=category)
     question_list = Question.objects.order_by('-create_date')
 
     # 페이지 및 검색 처리
@@ -31,11 +34,22 @@ def question_list(request):
 
     paginator = Paginator(question_list, 10)
     page_obj = paginator.get_page(page)
-    context = {'question_list': page_obj, 'page': page, 'kw': kw}
+    context = {
+        'question_list': page_obj,
+        'page': page,
+        'kw': kw,
+        # 'current_category': category,
+        # 'category_list': categories
+    }
     return render(request, 'board/question_list.html', context)
 
+# 카테고리별 post 리스트 페이지
+def category_list(request, slug):
+    return render(request, 'board/question_list.html')
+
 def detail(requset, question_id):
-    question = Question.objects.get(id=question_id)
+    # categories = Category.objects.all()
+    question = get_object_or_404(Question, id=question_id)
     context = {'question': question}
     return render(requset, 'board/detail.html', context)
 
@@ -132,3 +146,21 @@ def vote_question(request, question_id):
     else:
         question.voter.add(request.user)
     return redirect('board:detail', question_id=question_id)
+
+# 댓글 등록
+@login_required(login_url='common:signin')
+def comment_create_question(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.create_date = timezone.now()
+            comment.question = question
+            comment.save()
+            return redirect('board:detail', question_id=question.id)
+    else:
+        form = CommentForm()
+    context = {'form': form}
+    return render(request, 'board/comment_form.html', context)

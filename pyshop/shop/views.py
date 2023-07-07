@@ -1,30 +1,36 @@
-from django.shortcuts import render
-
 from django.shortcuts import render, get_object_or_404
 
 from cart.forms import AddProductForm
-from .models import *
+from shop.models import Category, Product
+
 
 def index(request):
     return render(request, 'shop/index.html')
 
 def product_in_category(request, category_slug=None):
     current_category = None
-    categories = Category.objects.all()
+    categories = Category.objects.all()  #카테고리 목록
     products = Product.objects.filter(available_display=True)
 
+    keyword = request.GET.get('kw')  # 검색어를 가져오기
+
+    if keyword:
+        products = products.filter(name__icontains=keyword)  # 검색어를 포함하는 상품 필터
+
     if category_slug:
-        current_category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=current_category)
+        # 현재 카테고리 1개 가져옴
+       current_category = get_object_or_404(Category, slug=category_slug)
+       products = products.filter(category=current_category)
 
     context = {
         'current_category': current_category,
         'categories': categories,
         'products': products,
+        'kw': keyword
     }
     return render(request, 'shop/list.html', context)
 
-
+# 상세 페이지
 def product_detail(request, id, product_slug=None):
     product = get_object_or_404(Product, id=id, slug=product_slug)
     add_to_cart = AddProductForm(initial={'quantity': 1})

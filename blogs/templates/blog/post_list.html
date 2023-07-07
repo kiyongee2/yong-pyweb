@@ -1,97 +1,106 @@
 {% extends 'base.html' %}
-{% load static %}
+{% block title %}포스트 목록입니다.
+{% endblock %}
 {% block content %}
-<div class="container my-3">
-  <section id="post_list">
-      <h2>블로그 홈</h2>
-      {% if post_list %}
+    <h2>Blog 홈</h2>
+    {% if post_list %}
+        <!-- 포스트 가져옴 -->
         {% for post in post_list %}
             <hr>
             {% if post.category %}
                 <h6 class="text-end">[{{ post.category }}]</h6>
             {% endif %}
-            <h5>
-                <a href="{% url 'blog:detail' post.id %}">{{ post.title }}</a>
+            <h3 class="my-3">
+                <a href="{% url 'blog:detail' post.id %}">
+                    {{ post.title }}
+                </a>
+            </h3>
+            <h5 style="white-space: pre-line; line-height: 1.5">
+                {{ post.content }}
             </h5>
-            <p>
-                작성자: {{ post.author }} (작성일: {{ post.pub_date }}) |
+            <p>글쓴이: {{ post.author }} (작성일: {{ post.pub_date }}) |
                 {% if post.author == request.user  %}
-                <a href="#" class="delete"
-                   data-uri="{% url 'blog:post_delete' post.id %}">삭제</a>
+                    <a href="#" class="delete"
+                       data-uri="{% url 'blog:post_delete' post.id %}">삭제</a>
                 {% endif %}
             </p>
-            <!-- <p style="white-space: pre-line; line-height: 1.5em">-->
-                <p> {{ post.content | linebreaks }}
-            <!-- </p>-->
             {% if post.photo %}
                 <img src="{{ post.photo.url }}">
             {% endif %}
         {% endfor %}
-      {% else %}
+    {% else %}
         <p>포스트가 없습니다.</p>
-      {% endif %}
-  </section>
-  <aside>
-    <h4>분류(Categories)</h4>
-    <div>
-        <ul>
-            {% for category in categories %}
-                {% if current_category.slug == category.slug %}
-                <li style="background: #eee">
-                    <a href="{{ category.get_absolute_url }}">
-                        {{ category.name }}({{ category.post_set.count }})
+    {% endif %}
+
+    <!-- 페이지 처리 영역-->
+    <div class="row my-4">
+        <ul class="pagination justify-content-center">
+            <!-- 이전 페이지 -->
+            {% if post_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ post_list.previous_page_number }}">&laquo;</a>
+                </li>
+            {% else %}
+                <!-- 이전 페이지가 없어도 표시됨 -->
+                <li class="page-item disabled">
+                    <a class="page-link" href="">&laquo;</a>
+                </li>
+            {% endif %}
+            <!-- 현재 페이지 -->
+            {% for page_number in post_list.paginator.page_range %}
+                <!-- 현재 페이지와 리스트의 페이지가 일치하면 활성화함-->
+                {% if page_number == post_list.number %}
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ page_number }}">
+                        {{ page_number }}
                     </a>
                 </li>
                 {% else %}
-                <li>
-                    <a href="{{ category.get_absolute_url }}">
-                        {{ category.name }}({{ category.post_set.count }})
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_number }}">
+                        {{ page_number }}
                     </a>
                 </li>
                 {% endif %}
             {% endfor %}
+            <!-- 다음 페이지 -->
+            {% if post_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ post_list.next_page_number }}">&raquo;</a>
+                </li>
+            {% else %}
+                <!-- 이전 페이지가 없어도 표시됨 -->
+                <li class="page-item disabled">
+                    <a class="page-link" href="">&raquo;</a>
+                </li>
+            {% endif %}
         </ul>
-    </div>
-  </aside>
-  <section id="paging">
-      <ul>
-      <!-- 이전 페이지-->
-      {% if post_list.has_previous %}
-          <li><a href="?page={{ post_list.previous_page_number }}">&laquo;</a></li>
-      {% else %}
-          <li>&laquo;</li>
-      {% endif %}
-      <!-- 페이지 리스트 -->
-      {% for page_number in post_list.paginator.page_range %}
-          {% if page_number == post_list.number %}
-            <li>
-                <a href="?page={{ page_number }}" class="active">{{ page_number }}</a>
-            </li>
-          {% else %}
-            <li>
-                <a href="?page={{ page_number }}">{{ page_number }}</a>
-            </li>
-          {% endif %}
-      {% endfor %}
-      <!-- 다음 페이지-->
-      {% if post_list.has_next %}
-          <li><a href="?page={{ post_list.next_page_number }}">&raquo;</a></li>
-      {% else %}
-          <li>&raquo;</li>
-      {% endif %}
-      </ul>
-  </section>
-</div>
+    </div> <!-- 페이지 처리 끝 -->
+
+    <!-- 검색 폼 만들기-->
+    <form action="" method="get" id="searchForm">
+        {% csrf_token %}
+        <input type="hidden" id="kw" name="kw" value="{{ kw }}">
+    </form>
 {% endblock %}
+
 {% block script  %}
 <script>
     $(function(){
+        //삭제 처리
         $('.delete').click(function(){
             if(confirm('포스트를 정말로 삭제하시겠습니까?')){
                 location.href=$(this).data('uri');
             }
         });
+
+        //검색 처리
+        $('#btn_search').click(function(){
+            $('#kw').val($('.kw').val());  //입력폼에서 입력된 키워드를 hidden 타입
+            $('#searchForm').submit();     //폼을 전송함 - view로
+        });
     });
 </script>
 {% endblock %}
-
