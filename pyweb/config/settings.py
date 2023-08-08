@@ -8,12 +8,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i04!t*bct)vxxg!gx0x9vif-v8oae3htw0baw!-aru#t&!q!m-'
+SECRET_KEY = 'django-insecure-ypq=v*5%zheco2v*s#oa51y=_0lom68^qv4%%ks6opib*^=$i)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+
+# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -110,5 +113,5 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'   #로그인 성공시 루트(인덱스)로 이동
+LOGOUT_REDIRECT_URL = '/'  #로그아웃 성공시 루트(인덱스)로 이동

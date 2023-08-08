@@ -1,7 +1,12 @@
 from django.contrib import admin
-from board.models import Question, Answer
 
-admin.site.register(Question)
-admin.site.register(Answer)
+from board.models import Question, Answer, Category
 
-# admin.site.register(Category)
+# 관리자 페이지에 등록
+admin.site.register(Question)  #질문 모델 등록
+admin.site.register(Answer)  #답변 모델 등록
+
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+admin.site.register(Category, CategoryAdmin)

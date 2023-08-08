@@ -1,7 +1,10 @@
 @charset 'utf-8';
 
 a{text-decoration: none;}
-/*select .form-select{text-align: left}*/
+.comment{
+    border-top: 1px dotted #ccc;
+    font-size: 0.9em;
+}
 
 
 

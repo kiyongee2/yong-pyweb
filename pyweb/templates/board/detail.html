@@ -1,134 +1,139 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
-  <section id="detail">
-      <h3 class="border-bottom py-2">{{ question.subject }}</h3>
-      <!-- 추천 영역과 질문 영역으로 구분 -->
-      <div class="row">
-          <!-- 추천 영역 -->
-          <div class="col-1">
-              <div class="bg-light text-center p-3 border font-weight-bolder">
-                  {{ question.voter.count }}
-              </div>
-              <a href="#" data-uri="{% url 'board:vote_question' question.id %}"
-                 class="recommend btn btn-secondary btn-block px-3 m-1">추천</a>
-          </div>
-          <!-- 질문 영역 -->
-          <div class="col-11">
-              <div class="card my-3">
-                  <div class="card-body">
-                      <div class="card-text" style="white-space: pre-line; line-height: 2">
-                          {{ question.content }}
-                      </div>
-                      <div class="d-flex justify-content-end">
-                          {% if question.modify_date %} <!-- 질문 수정일이 있으면 -->
-                          <div class="badge bg-light text-dark p-2 mx-2">
-                              <div class="mb-2 text-start">modified at</div>
-                              <div>{{ question.modify_date }}</div>
-                          </div>
-                          {% endif %}
-                          <div class="badge bg-light text-dark p-2">
-                              <div class="mb-2 text-start">{{ question.author }}</div>
-                              <div>{{ question.create_date }}</div>
-                          </div>
-                      </div>
-                      {% if question.author == request.user %}
-                      <div>
-                          <a href="{% url 'board:question_modify' question.id %}"
-                             class="btn btn-sm btn-outline-secondary">수정</a>
-                          <a href="#" data-uri="{% url 'board:question_delete' question.id %}"
-                             class="delete btn btn-sm btn-outline-secondary">삭제</a>
-                      </div>
-                      <!-- 댓글 영역 -->
-                      <div class="mt-3">
-                          {% for comment in question.comment_set.all %}
-                          <div class="comment py-2 text-muted">
-                              <span style="white-space:pre-line">
-                                  {{ comment.content }}
-                              </span>
-                          </div>
-                          {% endfor %}
-                      </div>
-                      <div>
-                          <a href="{% url 'board:comment_create_question' question.id %}">댓글 추가..</a>
-                      </div>
-                      {% endif %}
-                  </div>
-              </div>
-          </div> <!-- col-11 끝 -->
-      </div><!--row 끝-->
-      <h5 class="border-bottom my-3 py-2">{{ question.answer_set.count }}개의 답변이 있습니다.</h5>
-      {% for answer in question.answer_set.all %}
-      <div class="card my-3">
-          <div class="card-body pt-0">
-              <div class="card-text" style="white-space: pre-line; line-height: 2">
-              {{ answer.content }}
-              </div>
-              <div class="d-flex justify-content-end my-2">
-                  {% if answer.modify_date %} <!-- 답변 수정일이 있으면 -->
-                  <div class="badge bg-light text-dark p-2 mx-2">
-                      <div class="mb-2 text-start">modified at</div>
-                      <div>{{ answer.modify_date }}</div>
-                  </div>
-                  {% endif %}
-                  <div class="badge bg-light text-dark p-2">
-                      <div class="mb-2 text-start">{{ answer.author }}</div>
-                      <div>{{ question.create_date }}</div>
-                  </div>
-              </div>
-              {% if answer.author == request.user %}
-              <div>
-                  <a href="{% url 'board:answer_modify' answer.id %}"
-                     class="btn btn-sm btn-outline-secondary">수정</a>
-                  <a href="#" data-uri="{% url 'board:answer_delete' answer.id %}"
-                     class="delete btn btn-sm btn-outline-secondary">삭제</a>
-              </div>
-              {% endif %}
-
-          </div>
-      </div>
-      {% endfor %}
-      <form action="{% url 'board:answer_create' question.id %}"
-            method="post" class="my-3">
-          {% csrf_token %}
-          <!-- 오류 메시지 start -->
-          {% if form.errors %}
-            <div class="alert alert-danger">
-                {% for field in form %}
-                    {% if field.errors %}
-                    <strong>{{ field.label }}</strong>
-                      {{ field.errors }}
-                    {% endif %}
-                {% endfor %}
+    <section id="detail">
+        <div class="row">
+            <div class="col-sm-12 col-md-3 col-lg-2 p-2">
+                <!-- Sidebar  -->
+                <nav id="sidebar" class="border-top border-secondary">
+                    <div class="list-group">
+                    {% for category in categories %}
+                        {% if current_category == category %}
+                        <a href="{{ category.get_absolute_url }}"
+                           class="rounded-0 list-group-item list-group-item-action list-group-item-light active"> {{ category.name }} </a>
+                        {% else %}
+                        <a href="{{ category.get_absolute_url }}"
+                           class="rounded-0 list-group-item list-group-item-action list-group-item-light"> {{ category.name }} </a>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                </nav>
             </div>
-          {% endif %}
-          <!-- 오류 메시지 end -->
-          <div class="form-group">
-            <textarea id="content" name="content" rows="10" class="form-control"
-                {% if not user.is_authenticated %} disabled {% endif %}></textarea>
-          </div>
-          <input type="submit" value="답변 등록" class="btn btn-primary my-3">
-      </form>
-  </section>
+
+            <div class="col-sm-12 col-md-9 col-lg-10 p-2">
+                <!-- Content -->
+                <div id="content" class="border-top border-secondary">
+                    <div class="content_block">
+                    <h5 class="border-bottom pl-2 pb-3 my-2">{{ current_category.name }}</h5>
+                        <h3 class="border-bottom py-2">{{ question.subject }}</h3>
+                        <div class="card my-3">
+                            <div class="card-body">
+                                <!-- 줄바꿈 : white-space: pre-line -->
+                                <div class="card-text" style="white-space: pre-line">
+                                    {{ question.content }} <!-- 질문 내용 -->
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="badge bg-info text-start">
+                                        <div class="mb-2">{{ question.author }}</div>
+                                        <div>{{ question.create_date }}</div>
+                                    </div>
+                                </div>
+                                <!-- 글쓴이와 로그인한 사람과 일치하면 -->
+                                {% if question.author == request.user %}
+                                <div>
+                                    <a href="{% url 'board:question_modify' question.id %}"
+                                       class="btn btn-sm btn-outline-secondary">수정</a>
+                                    <a href="#"
+                                       data-uri="{% url 'board:question_delete' question.id %}"
+                                       class="delete btn btn-sm btn-outline-secondary">삭제</a>
+                                </div>
+                                {% endif %}
+                                <!-- 댓글 영역 -->
+                                <div class="mt-3">
+                                    {% for comment in question.comment_set.all %}
+                                    <div class="comment py-2 text-muted">
+                                        <span>{{ comment.content|linebreaks}}</span>
+                                        <span>-{{ comment.author }}, {{ comment.create_date }}
+                                            {% if comment.modify_date %}
+                                              (수정일: {{ comment.modify_date }})
+                                            {% endif %}
+                                        </span>
+                                        {% if comment.author == request.user %}
+                                            <a href="#" class="delete"
+                                               data-uri="{% url 'board:comment_delete_question' comment.id %}">삭제</a>
+                                            <a href="{% url 'board:comment_modify_question' comment.id %}">수정</a>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- 댓글 등록 폼 -->
+                                <div>
+                                    <form action="{% url 'board:comment_create_question' question.id %}"
+                                          method="post" class="my-3">
+                                        {% csrf_token %}
+                                        {% include 'form_errors.html' %}
+                                        <div class="form-group">
+                                            <textarea name="content" rows="3" placeholder="댓글을 남겨보세요"
+                                                  class="form-control mb-2">{{ form.content.value|default_if_none:'' }}</textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-outline-success">등록</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <h5 class="border-bottom my-3 py-2">
+                            {{ question.answer_set.count }}개의 답변이 있습니다.
+                        </h5>
+                        {% for answer in question.answer_set.all %}
+                          <div class="card my-3">
+                            <div class="card-body">
+                                <div class="card-text" style="white-space: pre-line">
+                                    {{ answer.content }}  <!-- 답변 내용 -->
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="badge bg-info text-start">
+                                        <div class="mb-2">{{ answer.author }}</div>
+                                        <div>{{ answer.create_date }}</div>
+                                    </div>
+                                </div>
+                                <!-- 글쓴이와 로그인한 사람과 일치하면 -->
+                                {% if answer.author == request.user %}
+                                <div>
+                                    <a href="#"
+                                       data-uri="{% url 'board:answer_delete' answer.id %}"
+                                       class="delete btn btn-sm btn-outline-secondary">삭제</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <!-- 답변 등록 폼 -->
+                        <form action="{% url 'board:answer_create' question.id %}"
+                                        method="post" >
+                            {% csrf_token %}  <!-- 필수: 403 권한 에러 발생-->
+                            {% include 'form_errors.html' %}
+                            <div class="form-group">
+                                <textarea name="content" rows="10"
+                                          cols="50" class="form-control mb-3"
+                                  {% if not user.is_authenticated %}disabled{% endif %}></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">답변 등록</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}
-<!-- 삭제 알림창 -->
+
 {% block script %}
 <script>
-    //삭제 처리
     $(document).ready(function(){
-        $('.delete').click(function(){
-            if(confirm('정말로 삭제하시겠습니까?')){
-                location.href=$(this).data('uri');
-            }
-        });
-    });
-
-    //추천 처리
-    $(function(){
-        $('.recommend').click(function(){
-            if(confirm('정말로 추천하시겠습니까?')){
-                location.href = $(this).data('uri');
+        $('.delete').click(function(){  //삭제 버튼을 클릭하면
+            if(confirm('정말 삭제하시겠습니까?')){
+                location.href=$(this).data('uri'); //현재 대상 객체의 주소를 이동
             }
         });
     });

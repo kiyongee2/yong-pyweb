@@ -54,3 +54,12 @@ class Post(models.Model):
     def get_file_ext(self):
         # seoul.csv ->split() -> [seoul, csv]
         return self.get_file_name().split('.')[-1]
+
+class Comment(models.Model):
+    content = models.TextField()
+    pub_date = models.DateTimeField()
+    modify_date = models.DateTimeField(null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, null=True, blank=True,
+                     on_delete=models.CASCADE)
+

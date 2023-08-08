@@ -1,16 +1,8 @@
-/* 공통 스타일 */
-@font-face {
-    font-family: 'omyu_pretty';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
+@charset 'utf-8';
 
 a{text-decoration: none;}
-textarea{resize: none;}
-
-body{
-    font-family: 'omyu_pretty';
+.comment{
+    border-top: 1px dotted #ccc;
+    font-size: 0.9em;
 }
-
-#main{text-align: center; margin: 100px; auto;}
+/*textarea{font-size: 0.8em;}*/

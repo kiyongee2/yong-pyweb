@@ -4,10 +4,11 @@ from board.models import Question, Answer, Comment
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ['subject', 'content']
+        fields = ['subject', 'content', 'category']
         labels = {
-            'subject': '제목',
-            'content': '내용'
+            'subject' : '제목',
+            'content' : '내용',
+            'category' : '카테고리'
         }
 
 class AnswerForm(forms.ModelForm):
@@ -22,6 +23,4 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
-        labels = {
-            'content': '댓글 내용'
-        }
+        labels = {'content': '댓글 내용'}
